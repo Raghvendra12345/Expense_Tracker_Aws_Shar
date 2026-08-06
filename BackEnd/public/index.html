@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask AI</title>
+</head>
+<body>
+    <h1>Ask Gemini</h1>
+    <form id="gemini-form">
+     <input type="text" id="prompt" placeholder="Ask Something..." required"/>
+     <button type="submit">Submit</button>
+    </form>
+    <p id="response"></p>
+    <script>
+       document.getElementById("gemini-form").addEventListener('submit',async(event)=>{
+           event.preventDefault();
+            const prompt=document.getElementById('prompt').value
+
+            const response=await fetch('http://localhost:4500/expense/ask',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                },
+                body:JSON.stringify({prompt})
+            });
+            const data=await response.json();
+            document.getElementById('response').innerHTML=data.response
+       })
+    </script>
+    
+</body>
+</html>

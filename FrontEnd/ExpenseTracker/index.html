@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Expense Page</title>
+</head>
+
+<body>
+    <button id="paymentGateway" class="premium-btn">Be a Premium User</button>
+    <button id="downloadBtn" style="display:none">Download Expense</button>
+    <button id="leaderboardBtn"  class="leaderboard-btn "style="display:none" >Show LeaderBoard</button>
+    <div class="container">
+         <button id='logout'>Logout</button>
+        <h1>Expense Tracker</h1>
+        <p class="subtitle">
+            Track and manage your daily expenses
+        </p>
+        
+        <form onsubmit="handleExpense(event)">
+            <label for="expenseamount">Choose expenseAmount</label>
+            <input type="number" id="expenseamount" name="expenseamount" />
+            <label for="description">Choose description</label>
+            <input type="text" id="description" name="description" />
+
+            <label for="category">Choose a Category</label>
+            <select id="category" name="category">
+                <option>Fuel</option>
+                <option>Food</option>
+                <option>Groceries</option>
+                <option>Electricity</option>
+                <option>Movie</option>
+                <option>Holiday Trips</option>
+                <option>FootWear</option>
+                <option>Other</option>
+            </select>
+            <button type="submit" class="add-btn">Add Expense</button>
+            <br>
+
+            
+
+        </form>
+        
+        <h2 class="expense-list-title">
+            Expense History
+        </h2>
+        <ul id="listofExpenses"></ul>
+        <div id="pagination"></div>
+       
+    </div>
+     <div id="boardleader" class="leaderboard-box"></div>
+    <script src="index.js"></script>
+</body>
+
+</html>

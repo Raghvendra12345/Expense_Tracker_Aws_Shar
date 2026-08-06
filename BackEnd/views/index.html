@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashfree Checkout Integration</title>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            background-color: white;
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #renderBtn {
+            background-color: #09ff00;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #renderBtn:hover {
+            background-color: #ee840c;
+        }
+
+        p {
+            font-size: larger;
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+
+
+</head>
+<div>
+    <div class="container"></div>
+    <h1>Cashfree Checkout Integration</h1>
+    <div class="card">
+        <p>Click below to open the checkout page in current tab</p>
+        <button id="renderBtn">Proceed to Pay</button>
+
+        <!-- <div id=""cf_checkout"></div>   //it is for inline -->
+    </div>
+
+</div>
+
+</body>
+<!-- <script src="../public/cashfreeWeb_self.js"></script> -->
+  <!-- <script src="../public/cashfreeWeb_modal.js"></script> -->
+  <script>
+        
+    
+    const cashfree = Cashfree({
+        mode: "sandbox",
+    });
+    document.getElementById("renderBtn").addEventListener("click", async() => {
+
+        try{
+              const token = localStorage.getItem("token");
+             console.log("token",token)
+            const response=await fetch("http://localhost:4500/expense/pay",{
+                method:"POST",
+                headers:{
+                    Authorization:token
+                }
+            })
+            const data=await response.json()
+            const paymentSessionId=data.paymentSessionId;
+
+            //Intializ checkout options
+            let checkoutOptions={
+                paymentSessionId:paymentSessionId,
+                 
+                //New Page payment options
+                redirectTarget:"_self"  //default
+            };
+
+            //Start the checkout process
+            await cashfree.checkout(checkoutOptions)
+
+        }
+        catch(error){
+                 console.error("Error:",error)
+        }
+            
+    
+     
+});
+     
+
+  </script>
+</body>
+
+</html>

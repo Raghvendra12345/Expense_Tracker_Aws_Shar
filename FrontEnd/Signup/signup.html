@@ -1,0 +1,34 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="signup.css">
+    <title>Expense Tracker AWS</title>
+</head>
+<body>
+     <div class="container">
+        <h1>Signup Page</h1>
+
+        <p class="welcome-text">
+            Create your account to manage expenses easily
+        </p>
+    <form onsubmit="handleFormSubmit(event)">
+        <label for="username">Enter your name:</label>
+        <input type="text" id="username"  name="username" required/>
+        <label for="email">Enter your email:</label>
+        <input type="email" id="email" name="email" required/>
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password"  required/>
+        <button type="submit">Signup</button>
+        <a href='../Login/login.html'>Existing User - Login</a>
+    </form>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.10.0/axios.min.js" ></script>
+    <script src="signup.js"></script>
+</body>
+</html>
