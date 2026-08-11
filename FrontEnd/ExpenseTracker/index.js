@@ -12,12 +12,15 @@ let currentPage=1;
 const rowsperPage=5;
 
 
-window.addEventListener("DOMContentLoaded", load);
+window.addEventListener("DOMContentLoaded",() => {
+  load(1);
+});
 
 const descriptionInput = document.getElementById("description");
 descriptionInput.addEventListener("blur", getCategoryFromAI);
 
 async function load(page=1) {
+  console.log("LOAD CALLED WITH PAGE:", page);
   try {
     const token = localStorage.getItem("token");
     currentPage=page
@@ -43,17 +46,20 @@ async function load(page=1) {
     const parentElement = document.getElementById("listofExpenses");
     parentElement.innerHTML = "";
 
-    const response = await fetch("http://localhost:4500/expense/getexpense", {
+    const response = await fetch(`http://localhost:4500/expense/getexpense?page=${page}&limit=${rowsperPage}`, {
       headers: {
         Authorization: token,
       },
     });
 
     const data = await response.json();
+    console.log("Pagination data:", data);
 
     data.response.forEach((expense) => {
       addExpensetoUI(expense);
     });
+
+    updatePagination(data);
   } catch (err) {
     console.log(err);
   }
@@ -140,6 +146,7 @@ async function handleExpense(event) {
     if (response.ok && data.response) {
       addExpensetoUI(data.response);
       event.target.reset();
+      await load(currentPage);
     } else {
       console.log("Failed to save expense");
     }
@@ -277,3 +284,43 @@ async function downloadExpense() {
 
   window.URL.revokeObjectURL(url);
 }
+
+function updatePagination(data){
+
+   const previousBtn=document.getElementById('previousBtn')
+   const nextBtn=document.getElementById('nextBtn')
+   const pageNumber=document.getElementById('pageNumber')
+
+   pageNumber.textContent = `Page ${data.currentPage} of ${data.lastPage}`;
+
+  // Previous button
+  if (data.hasPreviousPage) {
+    previousBtn.disabled = false;
+  } else {
+    previousBtn.disabled = true;
+  }
+
+  // Next button
+  if (data.hasNextPage) {
+    nextBtn.disabled = false;
+  } else {
+    nextBtn.disabled = true;
+  }
+}
+
+document.getElementById("previousBtn").addEventListener("click", function () {
+  console.log("Previous clicked");
+  console.log("Current page:", currentPage);
+
+  if (currentPage > 1) {
+    load(currentPage - 1);
+  }
+});
+
+
+document.getElementById("nextBtn").addEventListener("click", function () {
+  console.log("Next clicked");
+  console.log("Current page:", currentPage);
+
+  load(currentPage + 1);
+});

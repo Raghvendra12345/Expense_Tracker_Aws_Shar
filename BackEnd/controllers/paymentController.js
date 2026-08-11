@@ -98,7 +98,8 @@ exports.getPaymentStatus=async(req,res)=>{
     updatedUser.username,
     updatedUser.isPremiumUser
       );
-    res.redirect(`http://127.0.0.1:5501/SQL/Expense_Tracker_Nodejs_AWS/FrontEnd/ExpenseTracker/index.html?token=${token}`)
+    // res.redirect(`http://127.0.0.1:5501/SQL/Expense_Tracker_Nodejs_AWS/FrontEnd/ExpenseTracker/index.html?token=${token}`)
+    res.redirect(`http://127.0.0.1:5500/FrontEnd/ExpenseTracker/index.html?token=${token}`)
 
 
 

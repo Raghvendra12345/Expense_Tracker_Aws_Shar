@@ -10,7 +10,9 @@ async function handleLogin(event){
             const loginDetails={
               email,password
             }
-           console.log(loginDetails)
+        //    console.log(loginDetails)
+           console.log("Login details:", loginDetails);
+    console.log("Sending login request...");
        
        const response=await fetch("http://localhost:4500/expense/login",{
         method:"POST",

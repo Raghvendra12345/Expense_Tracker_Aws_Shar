@@ -44,6 +44,7 @@ const getExpense = async (req, res) => {
       },
       limit,
       offset,
+      order: [["id", "DESC"]],
     });
     const totalExpense=await expenseModel.count({
       where:{
@@ -53,9 +54,9 @@ const getExpense = async (req, res) => {
 
     const lastPage=Math.ceil(totalExpense/limit);
     const hasNextPage=page<lastPage;
-    const nextPage=page+1;
+    const nextPage=hasNextPage?page+1:null;
     const hasPreviousPage=page>1
-    const previousPage=page-1
+    const previousPage=hasPreviousPage?page-1:null
 
     return res.status(200).json({
       response,

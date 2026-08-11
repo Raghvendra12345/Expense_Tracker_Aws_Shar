@@ -6,14 +6,20 @@ const User=require('../models/userModel')
 function authentication(req,res,next){
     try{
         const token=req.headers.authorization
-        console.log(token)
+        console.log("Authorization Header:",token)
 
        
         if(!token){
             return res.status(401).json({success:false,message:"No token provided"})
         }
 
-        const decoded=jwt.verify(token,'secretkey')
+        const authToken=token.startsWith("Bearer ")
+          ? token.split(" ")[1]
+          :token;
+         
+
+          console.log("Autal Token",token)
+        const decoded=jwt.verify(authToken,'secretkey')
         console.log('userID >>>>>',decoded.userId)
 
         User.findByPk(decoded.userId).then(user=>{
