@@ -324,3 +324,11 @@ document.getElementById("nextBtn").addEventListener("click", function () {
 
   load(currentPage + 1);
 });
+
+document.getElementById("logout").addEventListener("click", logout);
+
+function logout() {
+  localStorage.removeItem("token");
+
+  window.location.href = "../Login/login.html";
+}

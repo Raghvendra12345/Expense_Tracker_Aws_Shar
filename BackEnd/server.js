@@ -2,7 +2,7 @@ const express = require("express");
 const userDB = require("./utils/db");
 const cors = require("cors");
 const routes = require("./routes/expenseRoutes");
-const PORT = 4500;
+const PORT = process.env.PORT || 4500;
 const dotenv = require("dotenv");
 const { GoogleGenAI } = require("@google/genai");
 const path = require("path");
@@ -15,9 +15,6 @@ console.log("Gemini:", process.env.GEMINI_API_KEY);
 console.log("Brevo :", process.env.BREVO_API_KEY);
 console.log("Sender :", process.env.SENDER_EMAIL);
 
-// app.get("/", (req, res) => {
-//   res.send("Hey it is working good");
-// });
 app.use(cors());
 app.use(express.json());
 
@@ -64,10 +61,8 @@ app.post("/expense/ask", async (req, res) => {
     console.log(responsefromAI.text);
     res.status(200).json({ response: responsefromAI.text });
   } catch (err) {
-    console.log("ERROR OCCURRED");
-    console.log("Status:", err.status);
-    console.log("Message:", err.message);
-    console.log("Full Error:", err);
+    
+    console.log("AI Error:", err);
 
     res.status(200).json({ response: "Something went wrong" });
   }

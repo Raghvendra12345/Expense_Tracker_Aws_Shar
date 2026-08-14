@@ -30,7 +30,7 @@ async function handleLogin(event){
 
        }
        else{
-           throw new Error("failed to login")
+           showMessage(data.err || data.message || "Login Failed")
        }
 
 
@@ -38,7 +38,14 @@ async function handleLogin(event){
      }
      catch(err){
           console.log(err)
-          document.body.innerHTML+=`<div style="color:red;">${err.message}</div>`
+          showMessage("Something went Wrong !Try again Later")
      }
     
+}
+
+function showMessage(message){
+    const messageElemnt=document.getElementById("message")
+    messageElemnt.textContent=message
+    messageElemnt.style.display="block"
+    messageElemnt.style.color="red"
 }

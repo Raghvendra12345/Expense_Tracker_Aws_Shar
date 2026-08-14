@@ -70,7 +70,7 @@ const login=async(req,res)=>{
         })
         
         if(!user){
-            return res.status(404).json({error:"User not found"})
+            return res.status(404).json({err:"User not found"})
         }
         bcrypt.compare(password,user.password,async (err,result)=>{
             if(err){
@@ -80,7 +80,7 @@ const login=async(req,res)=>{
                 return res.status(200).json({successs:true,message:"User Logged in Successfully",token:generateAccessToken(user.id,user.username,user.isPremiumUser),isPremiumUser: user.isPremiumUser})
             }
             else{
-                return res.status(400).json({err:"Password is incorrect"})
+                return res.status(401).json({err:"Password is incorrect"})
             }
         })
 

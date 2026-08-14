@@ -26,21 +26,31 @@ async function handleFormSubmit(event){
         },
         body:JSON.stringify(signupDetails)
     })
+       const data=await response.json()
 
        if(response.status==201){
           window.location.href="../Login/login.html"  //change the page on successful login
        }
        else{
-          throw new Error('Failed to login')
+         //  throw new Error('Failed to Signup')
+         showMessage(data.error || data.message || "Signup Failed")
        }
 
 
     }
      catch(err){
-         document.body.innerHTML+=`<div style="color:red">${err}</div>`
+         showMessage("Something went wrong ! Try again later")
      }
    
 
 
 
+}
+
+
+function showMessage(message){
+   const messageElement=document.getElementById("message")
+   messageElement.textContent=message
+   messageElement.style.display="block"
+    messageElement.style.color="red"
 }

@@ -100,7 +100,7 @@ const updatePassword = async (req, res) => {
         }
 
         const hashedPassword =
-            await bcrypt.hash(password, 20);
+            await bcrypt.hash(password, 10);
 
         const user = await User.findByPk(request.userId);
 
