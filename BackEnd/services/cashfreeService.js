@@ -24,14 +24,17 @@ exports.createOrder = async (
                     customer_phone:customerPhone
                 },
                 "order_meta":  {
-                     "return_url": `http://localhost:4500/expense/payment-status/${orderId}`,  //calling payment-status
-                      payment_methods:"ccc, upi , nb"
+                     "return_url": `http://localhost:4500/expense/payment-status/${orderId}`, //calling payment-status
+                      payment_methods:"ccc,upi,nb"
                 },
                 order_expiry_time:formattedExpiryDate,  //!? set the valid expriy date
 
             };
             const response=await cashfree.PGCreateOrder(request)
+                     
             return response.data.payment_session_id;
+
+ 
            }
            catch(error){
             console.log("STATUS:", error.response?.status);
@@ -88,7 +91,34 @@ exports.getPaymentStatus = async(orderId)=>{
         console.log("Fetching Payment Status");
         console.log("Order ID =", orderId);
 
-        return "Success";
+
+
+        const response = await cashfree.PGOrderFetchPayment(orderId);
+
+        console.log("Cashfree response:");
+        console.log(response.data);
+
+        const payments = response.data;
+
+        const successPayment = payments.find(
+            payment => payment.payment_status === "SUCCESS"
+        );
+
+        if (successPayment) {
+            return "Success";
+        }
+
+        const pendingPayment = payments.find(
+            payment => payment.payment_status === "PENDING"
+        );
+
+        if (pendingPayment) {
+            return "Pending";
+        }
+
+        return "Failure";
+
+        // return "Success";
     }
     catch(error){
         console.error(error.message);

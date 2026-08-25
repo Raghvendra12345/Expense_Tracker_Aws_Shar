@@ -18,7 +18,7 @@ function authentication(req,res,next){
           :token;
          
 
-          console.log("Autal Token",token)
+          console.log("Actual Token",token)
         const decoded=jwt.verify(authToken,'secretkey')
         console.log('userID >>>>>',decoded.userId)
 

@@ -1,22 +1,45 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
+// const helmet=require("helmet")
+const compression=require("compression")
 const userDB = require("./utils/db");
 const cors = require("cors");
 const routes = require("./routes/expenseRoutes");
 const PORT = process.env.PORT || 4500;
-const dotenv = require("dotenv");
+
 const { GoogleGenAI } = require("@google/genai");
 const path = require("path");
 const app = express();
-dotenv.config();
+
+
+//Server static file is required
 app.use(express.static(path.join(__dirname, "public")));
 
 require("./models");
-console.log("Gemini:", process.env.GEMINI_API_KEY);
-console.log("Brevo :", process.env.BREVO_API_KEY);
-console.log("Sender :", process.env.SENDER_EMAIL);
+// console.log("Gemini:", process.env.GEMINI_API_KEY);
+// console.log("Brevo :", process.env.BREVO_API_KEY);
+// console.log("Sender :", process.env.SENDER_EMAIL);
 
-app.use(cors());
-app.use(express.json());
+
+const allowedOrigins=[
+  "http://127.0.0.1:5500",
+  "http://localhost:5500"
+]
+
+//Security/Middleware
+app.use(cors(
+  {
+    origin:allowedOrigins,
+    methods: ["GET","POST","PUT","DELETE"],
+    credentials:true  
+  }
+));
+
+// app.use(helmet())
+app.use(express.json({limit:"10kb"}));
+app.use(compression())
 
 app.use("/expense", routes);
 
@@ -24,6 +47,8 @@ app.use("/expense", routes);
 //   res.sendFile(path.join(__dirname, "public", "index.html"));
 // });
 
+
+//AI ROUTE
 app.post("/expense/ask", async (req, res) => {
   console.log("========== AI ROUTE HIT ==========");
   console.log(req.body);
@@ -68,13 +93,33 @@ app.post("/expense/ask", async (req, res) => {
   }
 });
 
-userDB
-  .sync({ force: false })
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log("Server is running Good");
-    });
+//Global Error Handler
+app.use((err,req,res,next)=>{
+  console.error(err)
+  res.status(500).json({
+    success:false,
+     message:"Internal Server Error"
   })
-  .catch((err) => {
-    console.log({ err: err.message });
-  });
+})
+
+
+
+  async function startServer(){
+    try{
+      await userDB.authenticate()
+      console.log("Connected Successfully")
+
+      await userDB.sync({force:false})
+      console.log("Database Synchronized Successfully")
+      app.listen(PORT,()=>{
+        console.log("Server is running Good")
+      })
+
+    }
+    catch(error){
+      console.error("Unable to start Server",error)
+      process.exit(1)
+
+    }
+  }
+  startServer()
