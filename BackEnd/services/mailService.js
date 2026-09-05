@@ -1,45 +1,5 @@
 
 
-// const SbiApiV3Sdk=require("sib-api-v3-sdk")
-
-// const client=SbiApiV3Sdk.ApiClient.instance
-
-// client.authentications["api-key"].apiKey= process.env.BREVO_API_KEY
-
-//     console.log("Brevo API Key:", process.env.BREVO_API_KEY);
-// console.log(client.authentications["api-key"]);
-
-// const tranEmailApi=new SbiApiV3Sdk.TransactionalEmailsApi();
-
-// async function sendResetEmail(email,uuid){
-
-//     const resetLink=`http://localhost:4500/resetpassword/${uuid}`
-
-//     await tranEmailApi.sendTransacEmail({
-
-         
-//         sender:{
-//             email:process.env.SENDER_EMAIL,
-//             name:"Expense Tracker"
-//         },
-//         to:[
-//              {
-//                 email:email
-//              }
-//         ],
-//         subject:"Reset Your Password",
-
-//         htmlContent:`
-//            <h2>Expense Tracker</h2>
-//            <p>Click the button below to reset your password </p>
-//            <a href="${resetLink}">Reset Password</a>
-//            <br><br>
-//            <p>This link will expired after it used.</p>
-//         `
-//     })
-// }
-
-// module.exports={sendResetEmail}
 
 
 

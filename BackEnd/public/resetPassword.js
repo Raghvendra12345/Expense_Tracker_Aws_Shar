@@ -33,6 +33,6 @@ async function updatePassword(event) {
     const data = await response.json();
 
     alert(data.message);
-    window.location.href="/Login/login.html"
+    window.location.href="http://127.0.0.1:5500/FrontEnd/Login/login.html";
 
 }

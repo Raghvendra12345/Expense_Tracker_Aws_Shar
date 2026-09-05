@@ -3,13 +3,13 @@
 
 const { userModel, expenseModel } = require("../models");
 
-const { Sequelize } = require("sequelize");
+const { Sequelize ,Op} = require("sequelize");
 
 const addExpense = async (req, res) => {
   try {
-    const { expenseamount, description, category } = req.body;
+    const { expenseamount, description, category ,date} = req.body;
 
-    if (!expenseamount || !description || !category) {
+    if (!expenseamount || !description || !category || !date) {
       return res.status(404).json({
         success: false,
         err: "Bad Parameters Something is missing",
@@ -20,6 +20,7 @@ const addExpense = async (req, res) => {
       expenseamount: expenseamount,
       description: description,
       category: category,
+      date:date,
       userId: req.user.userId,
     });
 
@@ -120,6 +121,7 @@ const showLeaderBoard = async (req, res) => {
       ],
       group: ["user.id"],
       order: [[Sequelize.literal("totalExpense"), "DESC"]],
+      // limit:10
     });
     res.status(200).json(leaderboardusers);
   } catch (err) {
@@ -128,17 +130,136 @@ const showLeaderBoard = async (req, res) => {
   }
 };
 
+// const downloadExpenses = async (req, res) => {
+//   try {
+//     const expense = await expenseModel.findAll({
+//       where: {
+//         userId: req.user.userId,
+//       },
+//     });
+//     res.status(200).json(expense);
+//   } catch (err) {
+//     res.status(500).json({ message: "Download failed" });
+//     console.log(err);
+//   }
+// };
+
 const downloadExpenses = async (req, res) => {
   try {
-    const expense = await expenseModel.findAll({
-      where: {
-        userId: req.user.userId,
-      },
+    const { type, date, year } = req.query;
+
+    const userId = req.user.userId;
+
+    let whereCondition = {
+      userId,
+    };
+
+    // DAILY
+    if (type === "daily") {
+      if (!date) {
+        return res.status(400).json({
+          success: false,
+          message: "Date is required",
+        });
+      }
+
+      whereCondition.date = date;
+    }
+
+    // MONTHLY
+    else if (type === "monthly") {
+      if (!date) {
+        return res.status(400).json({
+          success: false,
+          message: "Month is required",
+        });
+      }
+
+      // date = 2026-08
+      const startDate = `${date}-01`;
+
+      const [yearValue, monthValue] = date.split("-");
+
+      const nextMonth = new Date(
+        Number(yearValue),
+        Number(monthValue),
+        1
+      );
+
+      const endDate = nextMonth.toISOString().split("T")[0];
+
+      whereCondition.date = {
+        [Op.gte]: startDate,
+        [Op.lt]: endDate,
+      };
+    }
+
+    // YEARLY
+    else if (type === "yearly") {
+      if (!year) {
+        return res.status(400).json({
+          success: false,
+          message: "Year is required",
+        });
+      }
+
+      const startDate = `${year}-01-01`;
+      const endDate = `${Number(year) + 1}-01-01`;
+
+      whereCondition.date = {
+        [Op.gte]: startDate,
+        [Op.lt]: endDate,
+      };
+    }
+
+    // If no type is provided
+    else {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid report type",
+      });
+    }
+
+    const expenses = await expenseModel.findAll({
+      where: whereCondition,
+      order: [["date", "DESC"]],
     });
-    res.status(200).json(expense);
+
+    // TOTAL EXPENSE
+    const totalExpense = expenses.reduce(
+      (sum, expense) => sum + Number(expense.expenseamount),
+      0
+    );
+
+    // CATEGORY-WISE TOTAL
+    const categoryTotals = {};
+
+    expenses.forEach((expense) => {
+      const category = expense.category;
+
+      if (!categoryTotals[category]) {
+        categoryTotals[category] = 0;
+      }
+
+      categoryTotals[category] += Number(expense.expenseamount);
+    });
+
+    return res.status(200).json({
+      success: true,
+      type,
+      totalExpense,
+      totalNumberOfExpenses: expenses.length,
+      categoryTotals,
+      expenses,
+    });
+
   } catch (err) {
-    res.status(500).json({ message: "Download failed" });
     console.log(err);
+
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 

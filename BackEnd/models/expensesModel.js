@@ -26,6 +26,10 @@ const expense=sequelize.define('expense',{
         type:DataTypes.STRING,
         allowNull:false
     },
+    date:{
+        type:DataTypes.DATEONLY,
+        allowNull:false
+    },
     userId:{
         type:DataTypes.INTEGER,
         allowNull:false

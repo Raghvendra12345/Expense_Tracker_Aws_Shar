@@ -93,7 +93,10 @@ exports.getPaymentStatus = async(orderId)=>{
 
 
 
-        const response = await cashfree.PGOrderFetchPayment(orderId);
+        const response = await cashfree.PGOrderFetchPayments(orderId);
+
+        console.log("Cashfree response:");
+        console.log(response.data);
 
         console.log("Cashfree response:");
         console.log(response.data);

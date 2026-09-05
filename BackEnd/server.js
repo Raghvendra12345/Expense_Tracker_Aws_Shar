@@ -88,8 +88,9 @@ app.post("/expense/ask", async (req, res) => {
   } catch (err) {
     
     console.log("AI Error:", err);
-
-    res.status(200).json({ response: "Something went wrong" });
+     console.error("Message:", err.message);
+    console.error("Full error:", err);
+    res.status(500).json({ response: "Something went wrong" });
   }
 });
 
