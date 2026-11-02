@@ -331,6 +331,7 @@ document.getElementById("logout").addEventListener("click", logout);
 
 function logout() {
   localStorage.removeItem("token");
+  
 
   window.location.href = "../Login/login.html";
 }
